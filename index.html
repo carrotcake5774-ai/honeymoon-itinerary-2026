@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>신혼여행 일정표 — 잠금</title>
+  <style>
+    :root {
+      --bg: #fff8f3; --ink: #25212a; --muted: #756b7c; --line: #ead8cf;
+      --rose: #ff6b8a; --peach: #ffb37a; --blue: #5a8dee;
+      --card: rgba(255,255,255,.86); --shadow: 0 24px 60px rgba(63,39,59,.13);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 12% 8%, rgba(255,107,138,.25), transparent 30%), radial-gradient(circle at 86% 12%, rgba(90,141,238,.20), transparent 32%), linear-gradient(135deg, #fff8f3 0%, #f8fbff 100%);
+      padding: 44px 18px;
+    }
+    main { max-width: 1040px; margin: 0 auto; }
+    .lock { max-width: 560px; margin: min(12vh,90px) auto 0; padding: 34px; }
+    .lock h1 { margin: 0 0 10px; font-size: clamp(34px, 6vw, 58px); line-height: .98; letter-spacing: -0.05em; }
+    .lock p { color: var(--muted); line-height: 1.65; }
+    .form { display: flex; gap: 10px; margin-top: 22px; }
+    input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 15px 16px; font: inherit; background: white; }
+    button { border: 0; border-radius: 16px; padding: 15px 18px; font: inherit; font-weight: 900; color: white; background: linear-gradient(135deg, var(--rose), var(--peach)); cursor: pointer; }
+    .hint { font-size: 13px; color: var(--muted); margin-top: 12px; }
+    .error { color: #c2415b; font-weight: 800; min-height: 22px; margin-top: 12px; }
+    .hero { display: grid; gap: 18px; margin-bottom: 26px; }
+    .eyebrow { color: var(--rose); font-weight: 800; letter-spacing: .12em; font-size: 13px; }
+    h1 { margin: 0; font-size: clamp(34px, 6vw, 64px); line-height: .98; letter-spacing: -0.05em; }
+    .subtitle { color: var(--muted); font-size: 18px; margin: 0; }
+    .panel { background: var(--card); border: 1px solid rgba(255,255,255,.74); border-radius: 30px; box-shadow: var(--shadow); backdrop-filter: blur(14px); overflow: hidden; }
+    .route-map { position: relative; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 14px; align-items: center; padding: 30px; }
+    .stop { min-height: 160px; border-radius: 24px; padding: 22px; background: #fff; border: 1px solid var(--line); }
+    .stop small { display: block; color: var(--muted); font-weight: 700; margin-bottom: 9px; }
+    .code { font-size: 44px; font-weight: 900; letter-spacing: -0.05em; }
+    .city { font-size: 16px; color: var(--muted); margin-top: 2px; }
+    .date { margin-top: 18px; font-weight: 800; }
+    .time { color: var(--rose); font-weight: 900; margin-top: 3px; }
+    .plane { color: var(--blue); font-size: 32px; font-weight: 900; }
+    .stay { min-width: 190px; text-align: center; padding: 18px 14px; border-radius: 999px; background: linear-gradient(135deg, rgba(255,107,138,.13), rgba(255,179,122,.16)); border: 1px solid var(--line); font-weight: 900; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+    .flight { padding: 24px; }
+    .badge { display: inline-flex; padding: 7px 12px; border-radius: 999px; color: white; font-weight: 900; font-size: 13px; }
+    .in { background: linear-gradient(135deg, var(--rose), var(--peach)); }
+    .out { background: linear-gradient(135deg, var(--blue), #8a6df1); }
+    .flight h2 { margin: 14px 0 8px; font-size: 26px; }
+    .meta { display: grid; grid-template-columns: 86px 1fr; gap: 8px 12px; color: var(--muted); }
+    .meta b { color: var(--ink); }
+    .todo { margin-top: 18px; padding: 24px 28px; }
+    .todo h2 { margin: 0 0 12px; }
+    ul { margin: 0; padding-left: 21px; color: var(--muted); line-height: 1.8; }
+    footer { color: var(--muted); text-align: center; margin-top: 20px; font-size: 13px; }
+    @media (max-width: 840px) { .route-map { grid-template-columns: 1fr; } .plane { transform: rotate(90deg); text-align: center; } .stay { border-radius: 24px; } .cards { grid-template-columns: 1fr; } .form { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <section class="panel lock">
+      <div class="eyebrow">PRIVATE HONEYMOON PAGE</div>
+      <h1>신혼여행 일정표</h1>
+      <p>공유 링크는 열려 있지만, 세부 일정은 비밀번호를 입력해야 복호화돼서 보여요.</p>
+      <form class="form" id="unlockForm">
+        <input id="password" type="password" autocomplete="current-password" placeholder="비밀번호" autofocus />
+        <button type="submit">열기</button>
+      </form>
+      <div class="error" id="error" role="alert"></div>
+      <div class="hint">※ 정적 페이지라 서버 인증은 아니지만, 세부 내용은 암호화해 소스에 평문으로 두지 않았습니다.</div>
+    </section>
+  </main>
+  <script>
+    const encrypted = {
+      iterations: 200000,
+      salt: "12/f8PQMIo388e292080Lg==",
+      iv: "pX+VZcP5EFT6vOF0",
+      data: "ykfskmgYch463PKweAkZVSQIUdzXYqnZ55LgZaXH4yrsYWoLTVNBLrH1Ts4HRnTc+JZORPR5/rTl7435N2SNvSdia+L8gzHTT0f1GH/MlCIcONFP7ZDExIJeou14BSF+Yn79ikDfRAbiiYOCwq6bSJ8RKFWTTbbvnShF2Vn3VUU9hmlhSEDjjhRRoybZsd3bXaS8GZY5H15EIN1WU+i0eJObaAA9w8rzAMjiZt9oCTIDvt6aRFNUc0yEvwEpOtwzpBS1n+/nrdo/eE1C3MeXmhHPIfzm857PbYeu6Mbv2SppfDbo808W4MRst8aQ1rEGfqDh+KuSs0y29clXjpAlObQg2JNABVV8tm+9fpvGg0D8+GEX8tRILDO581aVWWlknAjpEVnqxSIO4qO+efkNbZo7qGDVULH52b6UJAAwGy5hveeNXE0KfiF6V+yL2RSis/tYk4kyoL2wOhUHhQ6q+yNJaGOdp14N22WxuQqoYHnkEHsqA2bYcQ/W71Txl4P+3UvlYZQMKdDvey2OpurWJX89G6AIG4B+zXM2z0Qvg4ZigaWO+A5Xc1HP4O8ddL/wKyTnsA7bZhEGuuJgc/pB9s6Kz2CruD3t0MDn4IQEfu1VgGxzK/v0+mJr5+zvb5+QOn2TTM8nWcPqi/JxLXtcUyFc81OwDGBXgWPYKJfxpaxGgZ+q4TApVkRiRzPcF8nqMRVC5Z9jYUbaoPnmVQr9B0W2f/I5jOPLmvaPy0Ig+FrduzHf6ZTtSmTnqgoTyogbLnCLFReGS0wYgK/oOawEHEJo/16DK3y1CK2upgof5zj2Dq8nGGRJpEEHCzootcguEeyjts/St7Sc0gSwycP2rVfxk6T+oMhGnm0gYT4ImLi/j7iSo6quYTa8NM0x5bYgHYQC6W7ck/AK30u2svnWtbuT6PSgtbjgzDB/aIYVN8/nquOyW2FAG4KiWyylEwYL7vx/IPGd2bpVoqn9uqzE0HHiuBgUEu0UOjEPjTZwEMyb4NAPRwd2HXsAPKw4AFFXCbPlURda+yi8gh6DDcOP6ttD82ckugn5gw6g8/3C2VizaVw6c23HN2n0Z4JUcGJ15OaFNsn0DSrGmr7C1hT2sg1mcl8kvoVgbhVCXx1u8lF83q/SMZL6rqeowuJ17dUmvBgobbDqJ9hTAo9CqIxUAYrTAXw3Hf+I8KAscYd1yKDpFt7kjHWF8Cmy6Aj8BDWu5mFohZA2IkJrtuCFXF++MFLgOtIBcaWZNuYN6LfRGyLbFApfX8+A60h0kBk3DpPaJ7e5jVeHEwvPGLDuPnbSPrr5o4FGOw4jjyDeRsTDNIqnZH7+ISTqv5kKaDsdRO8kAqL0CehL+CDMU4VrW0db1b2ZU/h1zQbrmprZ0qd6+/apWzhqAXKZIL0FaPxhW6zjhIiftrNxJW66+WFjLZPvPXLCmTQS0JjsDm7K9iAo8G8LsVUGUDV+T2tZiL0aY7lpYHHvOfIfYJucY0JDLk8aw4742/L0kpYn+qvVhi4Ehsw8MoXmIk43vZJTEEVtgWBnG5BFQMQcduUs2ehq7jLsFtaQV7ZX2WxxyL3CP50pw5znmiXwpaeoyHw4LgiCYsPfsTf0mgW8HlmmDkMp+l3Oo+Fj5ZFhYbQm3civGf/svTM1hIlV2fBAiTox/WX6XjHnmbuYXUZvx08Tb7t0jNOhJzXQnSTofH3F6ocBvSSF/IxH0ENwbo/pa619FuQ17t+0Y9cw3npZb7vZ0fysu9UpYBwAsG7r7tEUgsN/FSoCRhKFgCia4BKrQnvY239LFFkM1wn5h0CrqmcFgXkpFzeL+Hzp8tUST/d9Y12ve+Sz/us4s1H2H6F4YvtIKSgaoqLyP5nxnYdQh/0GaluKC8plWI+XoUHv6UnHNmQNvLmuQwdysC5C8V0IRn1zRLqrdTvWIHvi0zTe33fL2hn4jDxfK0UyUciEKxJ+4DFgYYdGoedCXBIYWMB0xUxKDBNH7H4SYbAMiWSMBnpeJbt8KeEoiZ6kP8khRwTQLvqeLtazsBcYQlgoHAIieHZLbGBXWqToXySgpU7V/oohICV2yHVDqyl4AjfiKBaAt9BV0ACzFrvDntaXYYUTN0d4h0LJmWwl3OmtTgqAcM4m72CmDH+h8pI2Z0kSwvye0GQHmUBPqeWlai4DNayomucP+vq6qzRnbagNdarnKAjcJzJytdx1q0wvOOVsuwQc4tPl2/oyFkV2BzxyF8L42PnIzaIk6tgTyZo3sX9wSPQY4aoTXWubYzqNthrsEzuMveTezFM214jub3jpTZ5mkbMpKbo7ec+2hPDGYaoXHozIiAkvT2KrHitEOHGbQUSr4rLpJsRR2KtqDfSStMqt4dLGDnJ+jV52LhHcGTSZVy/CyXNJOSxTc6rk4mFmJTYAfTPEvJFe5v7P+UIzW8OD4bUbnopJyHIkPmEB1hJe2luR2OkrigsKN9britJGHB0wO397ijBRk+Ess339mo+9Jugwhek0y3WRzKdeE5D+ihKPf4rH9JEyZOtPtzwhS3DZH5n71kf2XFcXzPslyKViCFUeIEhtXzmDoMJTiLzDNtzCdrdWN9lKVryICHVUcrZK6pNujpt9CFyQTw1WbLYltkLvwBhsA5xsUimKNXmWIQjaJ3L2EaSBhZj0KJkE1wskgpZVlDUSTIMGGg6L0tIkuBSPakKMrr0TqZELzYn/3nNV1+0aRAqLrZGAYFkz/RMvXi5nW5ImMNape/Rw1HqkiUUP1ugRqId0Lo0i+nwtd3hTeDKmisDe9uHZNuekhKBro4WtAcXkjE1YDS/xpGtwqqnwU0A8+E0OQa8LMAibjSNCTvlJkDk7TiJqWRjzdMFPKJiKn4SPoq11WgZG8sqWXCoy7n4INYKus4KPdars13N8SZL0VQZY/brcKkdZ/GK+2uPWZFqKsASKW+gXQEeMnHE6Ace/RO7jnctU0AI2MNR5T3lm3McBs2OgZDtwBUijthUuM72DTnHotDt6rE9yzqcK8k0atmDin9H2zbeNnTt13GCspGf9U5GLj6OhJKu51nJBj+IvMEyFArL/n2dxctFu+la7zTkhWNZmGL0vmN9lLd8BR3DT8X0QR+BNewhe4ucNivchk2gnh0tdTtAJcEO+c+pCf3OC32Qw/TfSowuEPsWQGL/aazG3SpO1pBnhzfzwg9dHXSVCc8qYwxtY7mJTqTJJnN9wDohZEb26BihLFNjvaWLwZ+BmOCm76e9foBRAfiw4hd9MKznqRGXBDnKgyg48zd4D0CoTeafduN6RukdfspNoR2qg0rTd41JUC6+12eHSoCXCuTsiCe1kv1A2IpVw5+CJMUY+xwAOJ/0b1QqWwr/FD+LCeY1jnbpsq+ohfISOFUE2PphrSae3QkyLZuolI9Qi4XI1MMi+5DaeYLtLA3mR+wJB2CxFyNDyzZtgrNZek0iXEKd4AqeFKe0fArnBTGNu82dRjc2NAztNK+XVGgdYTjiDMo0pWC6N8JsbyDlIpVpp8sqcbgQTX7m3+kwiEt5x7QRqVDr5DZlqhjsLp4SAyrDIQW7ZoQkw+h5uOIfVIr3oYOMDL0/TdpLrlJ4IjwKtrWAzDCd1zSV7MZ1l836ipgW3XnyZtorPMWqMRJHbkiTRkehFEaEBTJ4IFJoan1V88wikX/vO0WCsgsbky4hXK/clhF2aYQqSxBAxgs4QC3RSs/lv8WmfC7ltLPz/cgftQGpi77F8ISac/v9GZ2MMmptowY70R3YIRUt9RdbqV10NvtFTOIybH56y+Q2po160gzKPRm0JOAe8tzn253Pf+e3/3T90mRciCpiId6v7ZZY8Z2OioIaAcmxFh7zzARmxxK1gzg51y/JJVNE00uzgH4wCtmhzYpj0kGfeHq+2JL+m4qM8f2ZV+TzlcmIIXMPkAHfaQ6KVCgEtnyhqKIr5LltB1xOl6bCciYo8YD8jz/u27Ct1Lyc6MgE1gcSHxJjLMqIGxJjyFsC5COQvTmPZ5pXgwhA4TNFyf72mYT0COPqB5r5DYZ+/EchzIiR96F+75whlagS8HWACKxreuWJEFVO+sVYfYoEjTvF18R4LxaPmBDCS8PaMgegW5yQpXcPHnzlpUyysbAg9fA4puAa+U2p4NBsft8hGxH0ps+0Bd92Q7b0YoyiYjBfBrkCiYZ24w7ZuTrzp8LAZOeQ+N36JhFmfmAe7uIQqrhIvkKtMg5o5h8YpaBlosU8Ns4FUx1Dacc/oCxS+CHDTRAQWHhknz1SL1sfBK1ogV5sGYVnMuRXanZra0Hz5uv8jlWAfvIUlC2r5r7E6oSjDzLHhauYql/sXR2rEkIIC4lR9Evk1TBwOFnW3so9SdyjoOK9wRQ0rg9aQ9T6i3EI9KIFY8Ilg9Ict5QLIIuf4iSRIQu/IWqZGyFZ9vr3fuj3P4L9l783zz0cskLwG4jG/5S3DQGMc7vxuLe6YNCBL6o1ukIHC3mMriYV+khyTSqS/+ROhNoyWyxzmdCsbYKeud6/+gCzu8FForRfCTVjogt5ZuG49TIJFQCS6RlE9bjoVwBTZAiNnjlMDcf6z+0jzbgyayGFd0y20slCb+HI1yyh0GTIhRg5ed6nFxl1c0Au+ZqVT8vgiHkJZAauJdHWF0pZ3H3YSNFHc+OMs9R6C3tjzqjzmKEyi/2u+v5B4JywCh1PsEZj0YfYE2FSIwT6QZBghc6C9r+8VhyCxPOXrC+NSwt+dVw0A2R27m1A8+jX7inWAnFQg6oQp9v9Koe8r5tjmhvVi+UvjzDRpnzRAHGB2DD9wOFFSl7WD5qoRUxyl8AcZLAEyvUt4EPfbdyUznhqEDS1FfCchFITI3n7eI36ZmYJ8s1bJjm+hEZM8LZZh+T2tZZ9ADI+z27Vr5tLUyGJaOwydRgWEsS3NXy6hb2ug/yIWJsQWC8gQy/FCG/6ZA0nP6qhC0i61OEPpOZrJOI0fu1/GQWdyWlfFd+PHSfgkSdumvkTGZ4Bl0evNY8HFjluzxLtqinemdJTxC2Pa2S/cP9t/l7AeOTKYHputv5vN66cc3CXXqC07OuzPrdnvt0ueBZ4v5+4fBmk7AhaXteQPmhaiFnYQXvsVUPQqC4rScDk0bqRmwy1WSMv9I8Q0nIhUdjBwoZ43C3l6C1KRTUPfzj/U0zQxh0wZ+4hv9mrGzLdMlrTkySJam3bxaCkWEpDgcGwsLOYyhZc3dVKeP4xzE2fWvDzouTw6RuT9"
+    };
+    const dec = new TextDecoder();
+    function b64bytes(s) { return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
+    async function deriveKey(password) {
+      const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: b64bytes(encrypted.salt), iterations: encrypted.iterations, hash: 'SHA-256' },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      );
+    }
+    document.getElementById('unlockForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const error = document.getElementById('error');
+      error.textContent = '';
+      try {
+        const key = await deriveKey(document.getElementById('password').value);
+        const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64bytes(encrypted.iv) }, key, b64bytes(encrypted.data));
+        document.getElementById('app').innerHTML = dec.decode(plain);
+      } catch (e) {
+        error.textContent = '비밀번호가 맞지 않아요.';
+      }
+    });
+  </script>
+</body>
+</html>
