@@ -95,14 +95,30 @@
       const error = document.getElementById('error');
       error.textContent = '';
       try {
-        const key = await deriveKey(document.getElementById('password').value);
+        const password = document.getElementById('password').value;
+        const key = await deriveKey(password);
         const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64bytes(encrypted.iv) }, key, b64bytes(encrypted.data));
+        sessionStorage.setItem('honeymoonPagePassword', password);
         document.getElementById('app').innerHTML = dec.decode(plain);
         if (window.initItineraryPages) window.initItineraryPages();
       } catch (e) {
         error.textContent = '비밀번호가 맞지 않아요.';
       }
     });
+    async function trySavedPassword() {
+      const saved = sessionStorage.getItem('honeymoonPagePassword');
+      if (!saved) return;
+      try {
+        const key = await deriveKey(saved);
+        const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64bytes(encrypted.iv) }, key, b64bytes(encrypted.data));
+        document.getElementById('app').innerHTML = dec.decode(plain);
+        if (window.initItineraryPages) window.initItineraryPages();
+      } catch (e) {
+        sessionStorage.removeItem('honeymoonPagePassword');
+      }
+    }
+    trySavedPassword();
+
     window.initItineraryPages = function () {
       const buttons = Array.from(document.querySelectorAll('[data-page-target]'));
       const pages = Array.from(document.querySelectorAll('[data-page]'));
